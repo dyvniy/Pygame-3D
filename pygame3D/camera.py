@@ -6,6 +6,10 @@ from pygame3D.vector import *
 from math import cos, sin
 import pygame
 
+def abs(x):
+    if x<0: return -x
+    return x
+
 class Camera():
 
 
@@ -26,13 +30,16 @@ class Camera():
         # gravitation
         self.gravity = gravity
         self.fallspeed = 0
+        self.in_jump = False
         self.height = height
 
 
     def apply_gravity(self):
         if self.gravity:
             self.fallspeed += 0.08
-            if self.c.elems[1] - self.fallspeed <= self.height: self.c.elems[1] = self.height
+            if self.c.elems[1] - self.fallspeed <= self.height: 
+                self.c.elems[1] = self.height
+                self.in_jump = False
             else: self.move_down(self.fallspeed)
 
 
@@ -47,7 +54,10 @@ class Camera():
         if keys[pygame.K_SPACE]:
             if self.gravity:
                 #if self.c.elems[1] == self.height: self.fallspeed = -18
-                self.fallspeed -= 0.2
+                print(self.fallspeed)
+                if self.fallspeed > 0 and not self.in_jump:
+                    self.fallspeed = -4
+                    self.in_jump = True
             else:
                 self.move_up(v_mov)
         if keys[pygame.K_LEFT]:
